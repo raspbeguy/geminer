@@ -1,0 +1,48 @@
+# This is the configuration file for geminer.
+# Is is not intended to be executed.
+
+# path to directory containing markdonw files to convert
+md_dir = "~/repo/htg-content/content/posts"
+
+# path to directory where gemini files will be exported
+gmi_dir = "/tmp/gemini"
+
+# path to directory containing templates
+tpl_dir = "~/repo/htg-content/gemini/templates"
+
+# list of markdown files extensions
+# Any file with a different extension will be ignored.
+md_extensions = [
+        "markdown",
+        "mdown",
+        "mkdn",
+        "md",
+        "mkd",
+        "mdwn",
+        "mdtxt",
+        "mdtext",
+        "text",
+        "Rmd"
+        ]
+
+# Set following value to True if you want ".gmi" extensions on new files.
+gmi_extension = False
+
+# replacement map
+# Some CMS make you use some placeholders (for instance for assets URL).
+# You have to inform geminer of them here.
+replace = [
+        ("%assets_url%", "https://hashtagueule.fr/assets")
+        ]
+
+# md2gemini settings
+# Check the documentation at https://pypi.org/project/md2gemini/
+code_tag=""
+img_tag="[IMG]"
+indent=" "
+ascii_table=False
+links="copy"
+plain=True
+strip_html=False
+base_url=""
+table_tag="table"
