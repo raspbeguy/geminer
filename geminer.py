@@ -67,7 +67,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
                 plain=config.plain,
                 strip_html=config.strip_html,
                 base_url=config.base_url,
-                rellink_func=add_ext_gmi,
+                link_func=add_ext_gmi,
                 table_tag=config.table_tag
                 )
 
