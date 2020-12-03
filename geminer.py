@@ -4,8 +4,12 @@ from md2gemini import md2gemini
 import frontmatter
 from jinja2 import Template
 import os
+import locale
 
 import config
+
+# locale (for templates, for example dates rendering)
+locale = "fr_FR.utf8"
 
 md_path = os.path.expanduser(config.md_dir)
 gmi_path = os.path.expanduser(config.gmi_dir)

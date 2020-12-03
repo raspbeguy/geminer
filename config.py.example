@@ -1,5 +1,8 @@
 # This is the configuration file for geminer.
-# Is is not intended to be executed.
+# It is not intended to be executed.
+
+# locale (for templates, for example dates rendering)
+locale = "fr_FR.utf8"
 
 # path to directory containing markdonw files to convert
 md_dir = "~/repo/htg-content/content/posts"
