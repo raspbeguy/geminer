@@ -21,6 +21,8 @@ def add_ext_gmi(link):
     # Custom function to apply to links
     if "://" not in link: # apply only on local links
         return link+".gmi"
+    else:
+        return link
 
 # Walk through markdown directories
 for dirname, subdirlist, mdlist in os.walk('.'):
