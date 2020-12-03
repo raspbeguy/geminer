@@ -117,7 +117,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
             "filename": gmifile
             })
 
-       print(gmi_subpath+"/"+gmifile)
+        print(gmi_subpath+"/"+gmifile)
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
             gmi.write(gmitext)
 
