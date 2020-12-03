@@ -5,6 +5,7 @@ import frontmatter
 from jinja2 import Template
 import os
 import locale
+from datetime import datetime
 
 import config
 
@@ -14,6 +15,10 @@ locale.setlocale(locale.LC_ALL, config.locale)
 md_path = os.path.expanduser(config.md_dir)
 gmi_path = os.path.expanduser(config.gmi_dir)
 tpl_path = os.path.expanduser(config.tpl_dir)
+meta_path = os.path.expanduser(config.meta_dir)
+
+# Initiate post meta list
+posts_meta = []
 
 os.chdir(md_path)
 
@@ -52,9 +57,17 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         author = meta.get("author", None)
         date = meta.get("date", None)
         title = meta.get("title", None)
-        tags = meta.get("tags", None)
+        tags = meta.get("tags", None).split(',')
         # For now, tags list must be a comma-separated string
         # TODO: make possible to list tags as a YAML list
+
+        posts_meta.append({
+            "title": title,
+            "author": author,
+            "date": date,
+            "tags": tags
+            })
+
         for item in config.replace:
             mdtext = mdtext.replace(item[0],item[1])
 
@@ -105,3 +118,10 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         print(gmi_subpath+"/"+gmifile)
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
             gmi.write(gmitext)
+
+posts_meta = sorted(posts_meta, key=lambda p: datetime.strptime(p["date"]))
+
+with open(tpl_path+"/index.tpl", 'r') as tpl:
+    template = Template(tpl.read())
+
+indextext = template.render(posts_meta=posts_meta)
