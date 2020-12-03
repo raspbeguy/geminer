@@ -9,7 +9,7 @@ import locale
 import config
 
 # locale (for templates, for example dates rendering)
-locale = "fr_FR.utf8"
+locale.setlocale(locale.LC_ALL, config.locale)
 
 md_path = os.path.expanduser(config.md_dir)
 gmi_path = os.path.expanduser(config.gmi_dir)
