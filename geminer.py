@@ -61,13 +61,6 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         # For now, tags list must be a comma-separated string
         # TODO: make possible to list tags as a YAML list
 
-        posts_meta.append({
-            "title": title,
-            "author": author,
-            "date": date,
-            "tags": tags
-            })
-
         for item in config.replace:
             mdtext = mdtext.replace(item[0],item[1])
 
@@ -115,7 +108,16 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         gmifile = basename
         if config.gmi_extension:
             gmifile += ".gmi"
-        print(gmi_subpath+"/"+gmifile)
+
+        posts_meta.append({
+            "title": title,
+            "author": author,
+            "date": date,
+            "tags": tags,
+            "filename": gmifile
+            })
+
+       print(gmi_subpath+"/"+gmifile)
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
             gmi.write(gmitext)
 
