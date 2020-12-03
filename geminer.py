@@ -123,10 +123,16 @@ for dirname, subdirlist, mdlist in os.walk('.'):
 
 posts_meta.sort(key=lambda p: p["date"], reverse=True)
 
+# Generate home page
 with open(tpl_path+"/index.tpl", 'r') as tpl:
     template = Template(tpl.read())
-
 indextext = template.render(posts_meta=posts_meta)
-
 with open(meta_path+"/index.gmi", 'w') as index:
+    index.write(indextext)
+
+# Generate full list page
+with open(tpl_path+"/posts_list.tpl", 'r') as tpl:
+    template = Template(tpl.read())
+indextext = template.render(posts_meta=posts_meta)
+with open(meta_path+"/posts/index.gmi", 'w') as index:
     index.write(indextext)
