@@ -119,7 +119,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
             gmi.write(gmitext)
 
-posts_meta = sorted(posts_meta, key=lambda p: datetime.strptime(p["date"]))
+posts_meta.sort(key=lambda p: datetime.strptime(p["date"], "%Y-%m-%d"), reverse=True)
 
 with open(tpl_path+"/index.tpl", 'r') as tpl:
     template = Template(tpl.read())
