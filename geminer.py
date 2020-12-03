@@ -17,6 +17,10 @@ tpl_path = os.path.expanduser(config.tpl_dir)
 
 os.chdir(md_path)
 
+def add_ext_gmi(link):
+    # Custom function to apply to local links
+    return link+".gmi"
+
 # Walk through markdown directories
 for dirname, subdirlist, mdlist in os.walk('.'):
     
@@ -62,7 +66,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
                 plain=config.plain,
                 strip_html=config.strip_html,
                 base_url=config.base_url,
-                md_links=True,
+                rellink_func=add_ext_gmi,
                 table_tag=config.table_tag
                 )
 
