@@ -5,10 +5,14 @@
 locale = "fr_FR.utf8"
 
 # path to directory containing markdonw files to convert
-md_dir = "~/repo/htg-content/content/posts"
+md_dir = "/srv/my-site-content/posts"
 
 # path to directory where gemini files will be exported
-gmi_dir = "/tmp/gemini"
+gmi_dir = "/srv/gemini/my-site/posts"
+
+# path to directory where meta pages will be generated
+# such as home page, tags list, tag pages, author pages...
+meta_dir = "/srv/gemini/my-site"
 
 # path to directory containing templates
 tpl_dir = "~/repo/htg-content/gemini/templates"
