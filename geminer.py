@@ -5,6 +5,7 @@ import frontmatter
 from jinja2 import Template
 import os
 import locale
+from datetime import datetime
 
 import config
 
@@ -14,12 +15,19 @@ locale.setlocale(locale.LC_ALL, config.locale)
 md_path = os.path.expanduser(config.md_dir)
 gmi_path = os.path.expanduser(config.gmi_dir)
 tpl_path = os.path.expanduser(config.tpl_dir)
+meta_path = os.path.expanduser(config.meta_dir)
+
+# Initiate post meta list
+posts_meta = []
 
 os.chdir(md_path)
 
 def add_ext_gmi(link):
-    # Custom function to apply to local links
-    return link+".gmi"
+    # Custom function to apply to links
+    if "://" not in link: # apply only on local links
+        return link+".gmi"
+    else:
+        return link
 
 # Walk through markdown directories
 for dirname, subdirlist, mdlist in os.walk('.'):
@@ -49,9 +57,10 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         author = meta.get("author", None)
         date = meta.get("date", None)
         title = meta.get("title", None)
-        tags = meta.get("tags", None)
+        tags = meta.get("tags", None).split(',')
         # For now, tags list must be a comma-separated string
         # TODO: make possible to list tags as a YAML list
+
         for item in config.replace:
             mdtext = mdtext.replace(item[0],item[1])
 
@@ -66,7 +75,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
                 plain=config.plain,
                 strip_html=config.strip_html,
                 base_url=config.base_url,
-                rellink_func=add_ext_gmi,
+                link_func=add_ext_gmi,
                 table_tag=config.table_tag
                 )
 
@@ -99,6 +108,25 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         gmifile = basename
         if config.gmi_extension:
             gmifile += ".gmi"
+
+        posts_meta.append({
+            "title": title,
+            "author": author,
+            "date": date,
+            "tags": tags,
+            "filename": gmifile
+            })
+
         print(gmi_subpath+"/"+gmifile)
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
             gmi.write(gmitext)
+
+posts_meta.sort(key=lambda p: p["date"], reverse=True)
+
+with open(tpl_path+"/index.tpl", 'r') as tpl:
+    template = Template(tpl.read())
+
+indextext = template.render(posts_meta=posts_meta)
+
+with open(meta_path+"/index.gmi", 'w') as index:
+    index.write(indextext)
