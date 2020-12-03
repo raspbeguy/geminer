@@ -125,3 +125,6 @@ with open(tpl_path+"/index.tpl", 'r') as tpl:
     template = Template(tpl.read())
 
 indextext = template.render(posts_meta=posts_meta)
+
+with open(meta_path+"/index.gmi", 'w') as index:
+    index.write(indextext)
