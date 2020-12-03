@@ -134,5 +134,5 @@ with open(meta_path+"/index.gmi", 'w') as index:
 with open(tpl_path+"/posts_list.tpl", 'r') as tpl:
     template = Template(tpl.read())
 indextext = template.render(posts_meta=posts_meta)
-with open(meta_path+"/posts/index.gmi", 'w') as index:
+with open(meta_path+"/posts.gmi", 'w') as index:
     index.write(indextext)
