@@ -94,7 +94,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
                 )
 
         # Read template file
-        with open(tpl_path+"/"+template+".tpl", 'r') as tpl:
+        with open(tpl_path+"/"+post["template"]+".tpl", 'r') as tpl:
             template = Template(tpl.read())
 
         # Integrate the GMI content in the template
