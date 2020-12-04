@@ -79,7 +79,7 @@ post_props = [
 #                            disabled.
 #
 # Exemple: if the property is tags, then it will generate a tag index tags.gmi,
-# which will ling to some subindexes like tags/computer (assuming computer is
+# which will link to some subindexes like tags/computer (assuming computer is
 # an existing tag).
 #
 # Specify here a list of dictionnary, each one with the following keys:

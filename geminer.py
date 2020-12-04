@@ -68,12 +68,17 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         # Parse the YAML header
         meta = frontmatter.parse(mdtext)[0]
         
-        # Extract useful informations from the header
-        post["template"] = meta.get("template", None)
-        post["author"] = meta.get("author", None)
-        post["date"] = meta.get("date", None)
-        post["title"] = meta.get("title", None)
-        post["tags"] = meta.get("tags", None).split(',')
+        # Extract post properties
+        for prop in config.post_props:
+            post[prop] = meta.get(prop, None)
+
+        # Extract index properties
+        for prop_dict in config.index_props:
+            prop = prop_dict["property"]
+            post[prop] = meta.get(prop, None)
+            if prop_dict.get("list", False) and post[prop]:
+                post[prop] = post[prop].split(',')
+
         # For now, tags list must be a comma-separated string
         # TODO: make possible to list tags as a YAML list
 
