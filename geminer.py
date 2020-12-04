@@ -79,9 +79,8 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         # Extract index properties
         for prop_dict in config.index_props:
             prop = prop_dict["property"]
-            #post[prop] = meta.get(prop, None)
             prop_raw = meta.get(prop, None)
-            if prop_dict.get("list", False) and post[prop]:
+            if prop_dict.get("list", False) and prop_raw:
                 post[prop] = [{"name": word, "slug": slugify(word)} for word in prop_raw.split(',')]
                 for item in post[prop]:
                     slug = item["slug"]
