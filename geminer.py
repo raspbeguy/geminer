@@ -67,7 +67,10 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         
         # Parse the YAML header
         meta = frontmatter.parse(mdtext)[0]
-        
+       
+        # Extract template
+        post["template"] = meta.get("template", config.default_post_template)
+
         # Extract post properties
         for prop in config.post_props:
             post[prop] = meta.get(prop, None)

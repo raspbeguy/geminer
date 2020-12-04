@@ -106,7 +106,7 @@ index_props = [
         "property": "author",
         "list": False,
         "item_dir": "authors",
-        "item_tpl"; "author",
+        "item_tpl": "author",
         "index_name": "authors",
         "index_tpl": "authors_index"
     }
