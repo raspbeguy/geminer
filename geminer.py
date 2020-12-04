@@ -21,6 +21,8 @@ meta_path = os.path.expanduser(config.meta_dir)
 # Initiate meta lists
 posts = []
 posts_prop_index = {}
+for prop_dict in config.index_props:
+    posts_prop_index[prop_dict["property"]] = {}
 
 os.chdir(md_path)
 
@@ -77,7 +79,6 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         # Extract index properties
         for prop_dict in config.index_props:
             prop = prop_dict["property"]
-            posts_prop_index[prop] = {}
             post[prop] = meta.get(prop, None)
             if prop_dict.get("list", False) and post[prop]:
                 post[prop] = post[prop].split(',')
@@ -87,7 +88,6 @@ for dirname, subdirlist, mdlist in os.walk('.'):
                         posts_prop_index[prop][slug]["posts"].append(post)
                     else:
                         posts_prop_index[prop][slug] = {"name": item, "posts": [post]}
-                        print(item)
             else:
                 slug = slugify(post[prop])
                 if slug in posts_prop_index[prop]:
