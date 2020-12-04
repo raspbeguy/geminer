@@ -2,6 +2,7 @@
 
 from md2gemini import md2gemini
 import frontmatter
+from slugify import slugify
 from jinja2 import Template
 import os
 import locale
@@ -107,14 +108,16 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         
         posts.append(post)
         for tag in post["tags"]:
-            if tag in tags:
-                tags[tag].append(post)
+            slugtag = slugify(tag)
+            if slugtag in tags:
+                tags[tag]["posts"].append(post)
             else:
-                tags[tag] = [post]
-        if post["author"] in authors:
-            authors[post["author"]].append(post)
+                tags[tag] = {"name": tag, "posts": [post]}
+        slugauthor = slugify(post["author"])
+        if slugauthor in authors:
+            authors[post["author"]]["posts"].append(post)
         else:
-            authors[post["author"]] = [post]
+            authors[post["author"]] = {"name": post["author"], "posts": [post]}
 
         # Time to write the GMI file
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
