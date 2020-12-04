@@ -87,6 +87,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
                         posts_prop_index[prop][slug]["posts"].append(post)
                     else:
                         posts_prop_index[prop][slug] = {"name": item, "posts": [post]}
+                        print(item)
             else:
                 slug = slugify(post[prop])
                 if slug in posts_prop_index[prop]:
@@ -165,9 +166,9 @@ text = template.render(posts=posts)
 with open(meta_path+"/posts.gmi", 'w') as gmi:
     gmi.write(text)
 
-# Generate tags list page
-with open(tpl_path+"/tags_list.tpl", 'r') as tpl:
-    template = Template(tpl.read())
-text = template.render(tags=tags)
-with open(meta_path+"/tags.gmi", 'w') as gmi:
-    gmi.write(text)
+## Generate tags list page
+#with open(tpl_path+"/tags_list.tpl", 'r') as tpl:
+#    template = Template(tpl.read())
+#text = template.render(tags=tags)
+#with open(meta_path+"/tags.gmi", 'w') as gmi:
+#    gmi.write(text)
