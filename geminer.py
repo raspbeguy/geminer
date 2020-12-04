@@ -19,6 +19,8 @@ meta_path = os.path.expanduser(config.meta_dir)
 
 # Initiate meta lists
 posts = []
+tags = {}
+authors = {}
 
 os.chdir(md_path)
 
@@ -70,7 +72,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         post["author"] = meta.get("author", None)
         post["date"] = meta.get("date", None)
         post["title"] = meta.get("title", None)
-        post["tags"] = tags = meta.get("tags", None).split(',')
+        post["tags"] = meta.get("tags", None).split(',')
         # For now, tags list must be a comma-separated string
         # TODO: make possible to list tags as a YAML list
 
@@ -98,15 +100,21 @@ for dirname, subdirlist, mdlist in os.walk('.'):
             template = Template(tpl.read())
 
         # Integrate the GMI content in the template
-        gmitext = template.render(
-                content=gmitext,
-                meta = post
-                )
+        gmitext = template.render(content=gmitext, meta = post)
         
         # Dirty fix a weird bug where some lines are CRLF-terminated
         gmitext = gmitext.replace('\r\n','\n')
         
         posts.append(post)
+        for tag in post["tags"]:
+            if tag in tags:
+                tags[tag].append(post)
+            else:
+                tags[tag] = [post]
+        if author in authors:
+            authors[author].append(post)
+        else:
+            authors[author] = [post]
 
         # Time to write the GMI file
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
@@ -131,6 +139,6 @@ with open(meta_path+"/posts.gmi", 'w') as gmi:
 # Generate tags list page
 with open(tpl_path+"/tags_list.tpl", 'r') as tpl:
     template = Template(tpl.read())
-text = template.render(posts=posts)
+text = template.render(tags=tags)
 with open(meta_path+"/tags.gmi", 'w') as gmi:
     gmi.write(text)
