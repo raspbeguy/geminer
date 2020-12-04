@@ -17,8 +17,9 @@ gmi_path = os.path.expanduser(config.gmi_dir)
 tpl_path = os.path.expanduser(config.tpl_dir)
 meta_path = os.path.expanduser(config.meta_dir)
 
-# Initiate post meta list
-posts_meta = []
+# Initiate meta lists
+posts = []
+tags
 
 os.chdir(md_path)
 
@@ -40,8 +41,19 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         basename, extension = os.path.splitext(mdfile)
         extension = extension[1:]
 
-        print(basename)
-        
+        post = {}
+
+        gmifile = basename
+        if config.gmi_extension:
+            gmifile += ".gmi"
+
+        # We need the relative path without the "./"
+        simpledirname = dirname[2:]
+        if simpledirname == "":
+            post["path"] = gmifile
+        else:
+            post["path"] = simpledirname + "/" + gmifile       
+
         # We want to ignore the file if this isn't a markdown file
         if extension not in config.md_extensions:
             print("Ignoring file {}: \"{}\" not in markdown extensions list".format(mdfile, extension))
@@ -55,14 +67,15 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         meta = frontmatter.parse(mdtext)[0]
         
         # Extract useful informations from the header
-        template = meta.get("template", None)
-        author = meta.get("author", None)
-        date = meta.get("date", None)
-        title = meta.get("title", None)
-        tags = meta.get("tags", None).split(',')
+        post["template"] = meta.get("template", None)
+        post["author"] = meta.get("author", None)
+        post["date"] = meta.get("date", None)
+        post["title"] = meta.get("title", None)
+        post["tags"] = tags = meta.get("tags", None).split(',')
         # For now, tags list must be a comma-separated string
         # TODO: make possible to list tags as a YAML list
 
+        # Replace stuff
         for item in config.replace:
             mdtext = mdtext.replace(item[0],item[1])
 
@@ -84,64 +97,41 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         # Read template file
         with open(tpl_path+"/"+template+".tpl", 'r') as tpl:
             template = Template(tpl.read())
-        
-        # We need the relative path without the "./"
-        simpledirname = dirname[2:]
-        if simpledirname == "":
-            path = basename
-        else:
-        print(gmifile)
-            path = simpledirname + "/" + basename
-        
+
         # Integrate the GMI content in the template
         gmitext = template.render(
                 content=gmitext,
-                tags=tags,
-                template=template,
-                author=author,
-                date=date,
-                title=title,
-                path=path
+                meta = post
                 )
         
         # Dirty fix a weird bug where some lines are CRLF-terminated
         gmitext = gmitext.replace('\r\n','\n')
         
+        posts.append(post)
+
         # Time to write the GMI file
-        gmifile = basename
-        if config.gmi_extension:
-            gmifile += ".gmi"
-
-        posts_meta.append({
-            "title": title,
-            "author": author,
-            "date": date,
-            "tags": tags,
-            "filename": gmifile
-            })
-
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
             gmi.write(gmitext)
 
-posts_meta.sort(key=lambda p: p["date"], reverse=True)
+posts.sort(key=lambda p: p["date"], reverse=True)
 
 # Generate home page
 with open(tpl_path+"/index.tpl", 'r') as tpl:
     template = Template(tpl.read())
-text = template.render(posts_meta=posts_meta)
+text = template.render(posts=posts)
 with open(meta_path+"/index.gmi", 'w') as gmi:
     gmi.write(text)
 
 # Generate posts list page
 with open(tpl_path+"/posts_list.tpl", 'r') as tpl:
     template = Template(tpl.read())
-text = template.render(posts_meta=posts_meta)
+text = template.render(posts=posts)
 with open(meta_path+"/posts.gmi", 'w') as gmi:
     gmi.write(text)
 
 # Generate tags list page
 with open(tpl_path+"/tags_list.tpl", 'r') as tpl:
     template = Template(tpl.read())
-text = template.render(posts_meta=posts_meta)
+text = template.render(posts=posts)
 with open(meta_path+"/tags.gmi", 'w') as gmi:
     gmi.write(text)
