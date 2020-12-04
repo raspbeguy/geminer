@@ -92,7 +92,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
                 if slug in posts_prop_index[prop]:
                     posts_prop_index[prop][slug]["posts"].append(post)
                 else:
-                    posts_prop_index[prop][slug] = {"name": post['prop'], "posts": [post]}
+                    posts_prop_index[prop][slug] = {"name": post[prop], "posts": [post]}
 
         posts.append(post)
 
