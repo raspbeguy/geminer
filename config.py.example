@@ -8,7 +8,7 @@ locale = "fr_FR.utf8"
 md_dir = "/srv/my-site-content/posts"
 
 # path to directory where gemini files will be exported
-gmi_dir = "/srv/gemini/my-site/posts"
+gmi_content_dir = "/srv/gemini/my-site/posts"
 
 # path to directory where meta pages will be generated
 # such as home page, tags list, tag pages, author pages...
@@ -32,18 +32,20 @@ md_extensions = [
         "Rmd"
         ]
 
-# Set following value to True if you want ".gmi" extensions on new files.
-gmi_extension = False
+# Specify gemini files extension. Don't specify to disable extension.
+# Warning: disabling could have unwanted side effects.
+# Check out README for more informations.
+gmi_extension = "gmi"
 
 # replacement map
 # Some CMS make you use some placeholders (for instance for assets URL).
 # You have to inform geminer of them here.
 replace = [
         ("%assets_url%", "https://hashtagueule.fr/assets")
-        ]
+]
 
 # md2gemini settings
-# Check the documentation at https://pypi.org/project/md2gemini/
+# Check the documentation at https://pypi.org/project/md2gemini/l
 code_tag=""
 img_tag="[IMG]"
 indent=" "
@@ -53,3 +55,59 @@ plain=True
 strip_html=False
 base_url=""
 table_tag="table"
+
+# default template for posts that don't specify one
+default_post_template = "post"
+
+# per-post properties to fetch in frontmatter
+post_props = [
+    "date",
+    "title"
+    ]
+
+# indexable properties to fetch in frontmatter
+# A lot of CMS will manage properties like tags ans authors, which are written
+# in the frontmatter, and are used to make subgroups of posts.
+# This setting enables to do the same for any frontmatter property you wish.
+#
+# Each indexable property generate two views:
+#   * per-value post index:  This is a list of links to posts that have a given
+#                            value of the property. There are as many per-value
+#                            indexes as properties values.
+#   * property values index: This is a list of links to per-value indexes.
+#                            There is only one page of this kind, and it can be
+#                            disabled.
+#
+# Exemple: if the property is tags, then it will generate a tag index tags.gmi,
+# which will ling to some subindexes like tags/computer (assuming computer is
+# an existing tag).
+#
+# Specify here a list of dictionnary, each one with the following keys:
+#   * property (mandatory):     name of the property present in the frontmatter
+#   * list (facultative):       set to True if the property is a list of values
+#   * item_dir (facultative):   directory containing per-value posts indexes
+#   * item_tpl (facultative):   template of the per-value posts indexes
+#   * index_name (facultative): filename of the property values index
+#   * index_tpl (facultative):  template of the property values index
+#
+# Filenames are relative to meta_dir and extensions are automatically added.
+# When a string value is facultative, it defaults to property name, except for
+# index_name, which disables property values global index if not specified.
+index_props = [
+    {
+        "property": "tags",
+        "list": True,
+        "item_dir": "tags",
+        "item_tpl": "tag",
+        "index_name": "tags",
+        "index_tpl": "tags_index"
+    },
+    {
+        "property": "author",
+        "list": False,
+        "item_dir": "authors",
+        "item_tpl"; "author",
+        "index_name": "authors",
+        "index_tpl": "authors_index"
+    }
+]
