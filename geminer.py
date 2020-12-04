@@ -19,7 +19,6 @@ meta_path = os.path.expanduser(config.meta_dir)
 
 # Initiate meta lists
 posts = []
-tags
 
 os.chdir(md_path)
 
