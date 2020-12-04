@@ -82,7 +82,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
             #post[prop] = meta.get(prop, None)
             prop_raw = meta.get(prop, None)
             if prop_dict.get("list", False) and post[prop]:
-                post[prop] = [{"name": word, "slug": slugify(word) for word in prop_raw.split(',')]
+                post[prop] = [{"name": word, "slug": slugify(word)} for word in prop_raw.split(',')]
                 for item in post[prop]:
                     slug = item["slug"]
                     if slug in posts_prop_index[prop]:
