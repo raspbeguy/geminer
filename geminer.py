@@ -111,10 +111,10 @@ for dirname, subdirlist, mdlist in os.walk('.'):
                 tags[tag].append(post)
             else:
                 tags[tag] = [post]
-        if author in authors:
-            authors[author].append(post)
+        if post["author"] in authors:
+            authors[post["author"]].append(post)
         else:
-            authors[author] = [post]
+            authors[post["author"]] = [post]
 
         # Time to write the GMI file
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
