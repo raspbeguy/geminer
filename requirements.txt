@@ -1,0 +1,4 @@
+Jinja2
+md2gemini
+python-frontmatter
+python-slugify
