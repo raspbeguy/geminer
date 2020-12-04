@@ -20,8 +20,7 @@ meta_path = os.path.expanduser(config.meta_dir)
 
 # Initiate meta lists
 posts = []
-tags = {}
-authors = {}
+posts_prop_index = {}
 
 os.chdir(md_path)
 
@@ -78,12 +77,27 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         # Extract index properties
         for prop_dict in config.index_props:
             prop = prop_dict["property"]
+            posts_prop_index[prop] = {}
             post[prop] = meta.get(prop, None)
             if prop_dict.get("list", False) and post[prop]:
                 post[prop] = post[prop].split(',')
+                for item in post[prop]:
+                    slug = slugify(item)
+                    if slug in posts_prop_index[prop]:
+                        posts_prop_index[prop][slug]["posts"].append(post)
+                    else:
+                        posts_prop_index[prop][slug] = {"name": item, "posts": [post]}
+            else:
+                slug = slugify(post['prop'])
+                if slug in posts_prop_index[prop]:
+                    posts_prop_index[prop][slug]["posts"].append(post)
+                else:
+                    posts_prop_index[prop][slug] = {"name": post['prop'], "posts": [post]}
 
-        # For now, tags list must be a comma-separated string
-        # TODO: make possible to list tags as a YAML list
+        posts.append(post)
+
+        # For now, list properties must be comma-separated strings.
+        # TODO: make possible to list values as a YAML list
 
         # Replace stuff
         for item in config.replace:
@@ -114,18 +128,6 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         # Dirty fix a weird bug where some lines are CRLF-terminated
         gmitext = gmitext.replace('\r\n','\n')
         
-        posts.append(post)
-        for tag in post["tags"]:
-            slugtag = slugify(tag)
-            if slugtag in tags:
-                tags[slugtag]["posts"].append(post)
-            else:
-                tags[slugtag] = {"name": tag, "posts": [post]}
-        slugauthor = slugify(post["author"])
-        if slugauthor in authors:
-            authors[slugauthor]["posts"].append(post)
-        else:
-            authors[slugauthor] = {"name": post["author"], "posts": [post]}
 
         # Time to write the GMI file
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
@@ -139,6 +141,22 @@ with open(tpl_path+"/index.tpl", 'r') as tpl:
 text = template.render(posts=posts)
 with open(meta_path+"/index.gmi", 'w') as gmi:
     gmi.write(text)
+
+for prop_dict in config.index_props:
+    prop = prop_dict["property"]
+    if "index_name" in prop_dict:
+        with open(tpl_path+"/"+prop_dict.get("index_tpl",prop)+".tpl", 'r') as tpl:
+            template = Template(tpl.read())
+        text = template.render(prop=posts_prop_index[prop])
+        with open(meta_path+"/"+prop_dict["index_name"]+'.gmi', 'w') as gmi:
+            gmi.write(text)
+    os.makedirs(meta_path+"/"+prop_dict.get("item_dir", prop), exist_ok=True)
+    with open(tpl_path+"/"+prop_dict.get("item_tpl", prop)+".tpl", 'r') as tpl:
+        template = Template(tpl.read())
+    for item in posts_prop_index[prop]:
+        text = template.render(prop_item=posts_prop_index[prop][item])
+        with open(meta_path+"/"+prop_dict.get("item_dir", prop)+"/"+posts_prop_index[prop][item]+".gmi") as gmi:
+            gmi.write(text)
 
 # Generate posts list page
 with open(tpl_path+"/posts_list.tpl", 'r') as tpl:
