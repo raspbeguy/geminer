@@ -110,14 +110,14 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         for tag in post["tags"]:
             slugtag = slugify(tag)
             if slugtag in tags:
-                tags[tag]["posts"].append(post)
+                tags[slugtag]["posts"].append(post)
             else:
-                tags[tag] = {"name": tag, "posts": [post]}
+                tags[slugtag] = {"name": tag, "posts": [post]}
         slugauthor = slugify(post["author"])
         if slugauthor in authors:
-            authors[post["author"]]["posts"].append(post)
+            authors[slugauthor]["posts"].append(post)
         else:
-            authors[post["author"]] = {"name": post["author"], "posts": [post]}
+            authors[slugauthor] = {"name": post["author"], "posts": [post]}
 
         # Time to write the GMI file
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
