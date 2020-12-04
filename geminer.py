@@ -39,6 +39,8 @@ for dirname, subdirlist, mdlist in os.walk('.'):
     for mdfile in mdlist:
         basename, extension = os.path.splitext(mdfile)
         extension = extension[1:]
+
+        print(basename)
         
         # We want to ignore the file if this isn't a markdown file
         if extension not in config.md_extensions:
@@ -88,6 +90,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         if simpledirname == "":
             path = basename
         else:
+        print(gmifile)
             path = simpledirname + "/" + basename
         
         # Integrate the GMI content in the template
@@ -117,7 +120,6 @@ for dirname, subdirlist, mdlist in os.walk('.'):
             "filename": gmifile
             })
 
-        print(gmi_subpath+"/"+gmifile)
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
             gmi.write(gmitext)
 
@@ -126,13 +128,20 @@ posts_meta.sort(key=lambda p: p["date"], reverse=True)
 # Generate home page
 with open(tpl_path+"/index.tpl", 'r') as tpl:
     template = Template(tpl.read())
-indextext = template.render(posts_meta=posts_meta)
-with open(meta_path+"/index.gmi", 'w') as index:
-    index.write(indextext)
+text = template.render(posts_meta=posts_meta)
+with open(meta_path+"/index.gmi", 'w') as gmi:
+    gmi.write(text)
 
-# Generate full list page
+# Generate posts list page
 with open(tpl_path+"/posts_list.tpl", 'r') as tpl:
     template = Template(tpl.read())
-indextext = template.render(posts_meta=posts_meta)
-with open(meta_path+"/posts.gmi", 'w') as index:
-    index.write(indextext)
+text = template.render(posts_meta=posts_meta)
+with open(meta_path+"/posts.gmi", 'w') as gmi:
+    gmi.write(text)
+
+# Generate tags list page
+with open(tpl_path+"/tags_list.tpl", 'r') as tpl:
+    template = Template(tpl.read())
+text = template.render(posts_meta=posts_meta)
+with open(meta_path+"/tags.gmi", 'w') as gmi:
+    gmi.write(text)
