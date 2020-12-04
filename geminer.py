@@ -134,8 +134,6 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
             gmi.write(gmitext)
 
-posts.sort(key=lambda p: p["date"], reverse=True)
-
 # Generate home page
 with open(tpl_path+"/index.tpl", 'r') as tpl:
     template = Template(tpl.read())
@@ -143,6 +141,7 @@ text = template.render(posts=posts)
 with open(meta_path+"/index.gmi", 'w') as gmi:
     gmi.write(text)
 
+# Generate custom meta pages
 for prop_dict in config.index_props:
     prop = prop_dict["property"]
     if "index_name" in prop_dict:
@@ -156,7 +155,7 @@ for prop_dict in config.index_props:
         template = Template(tpl.read())
     for item in posts_prop_index[prop]:
         text = template.render(prop_item=posts_prop_index[prop][item])
-        with open(meta_path+"/"+prop_dict.get("item_dir", prop)+"/"+posts_prop_index[prop][item]+".gmi") as gmi:
+        with open(meta_path+"/"+prop_dict.get("item_dir", prop)+"/"+item+".gmi") as gmi:
             gmi.write(text)
 
 # Generate posts list page
@@ -165,10 +164,3 @@ with open(tpl_path+"/posts_list.tpl", 'r') as tpl:
 text = template.render(posts=posts)
 with open(meta_path+"/posts.gmi", 'w') as gmi:
     gmi.write(text)
-
-## Generate tags list page
-#with open(tpl_path+"/tags_list.tpl", 'r') as tpl:
-#    template = Template(tpl.read())
-#text = template.render(tags=tags)
-#with open(meta_path+"/tags.gmi", 'w') as gmi:
-#    gmi.write(text)
