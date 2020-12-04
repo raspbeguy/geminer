@@ -88,7 +88,7 @@ for dirname, subdirlist, mdlist in os.walk('.'):
                     else:
                         posts_prop_index[prop][slug] = {"name": item, "posts": [post]}
             else:
-                slug = slugify(post['prop'])
+                slug = slugify(post[prop])
                 if slug in posts_prop_index[prop]:
                     posts_prop_index[prop][slug]["posts"].append(post)
                 else:
