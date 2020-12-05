@@ -29,7 +29,7 @@ Soon. For now you can read [the example config](config.py.example).
 
 ## Gemini capsules using Geminer
 
-* [Hashtagueule](gemini://hashtagueule.fr)
+* gemini://hashtagueule.fr
 
 ## TODO
 
