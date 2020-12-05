@@ -26,18 +26,20 @@ for prop_dict in config.index_props:
 
 os.chdir(md_path)
 
+
 def add_ext_gmi(link):
     # Custom function to apply to links
-    if "://" not in link: # apply only on local links
-        return link+".gmi"
+    if "://" not in link:  # apply only on local links
+        return link + ".gmi"
     else:
         return link
 
+
 # Walk through markdown directories
-for dirname, subdirlist, mdlist in os.walk('.'):
-    
+for dirname, subdirlist, mdlist in os.walk("."):
+
     # Create same hierarchy in GMI directory
-    gmi_subpath = os.path.abspath(gmi_path+"/"+dirname)
+    gmi_subpath = os.path.abspath(gmi_path + "/" + dirname)
     os.makedirs(gmi_subpath, exist_ok=True)
 
     for mdfile in mdlist:
@@ -55,20 +57,24 @@ for dirname, subdirlist, mdlist in os.walk('.'):
         if simpledirname == "":
             post["path"] = gmifile
         else:
-            post["path"] = simpledirname + "/" + gmifile       
+            post["path"] = simpledirname + "/" + gmifile
 
         # We want to ignore the file if this isn't a markdown file
         if extension not in config.md_extensions:
-            print("Ignoring file {}: \"{}\" not in markdown extensions list".format(mdfile, extension))
+            print(
+                'Ignoring file {}: "{}" not in markdown extensions list'.format(
+                    mdfile, extension
+                )
+            )
             pass
-        
+
         # Read the Markdown file
-        with open(dirname+"/"+mdfile, 'r') as md:
+        with open(dirname + "/" + mdfile, "r") as md:
             mdtext = md.read()
-        
+
         # Parse the YAML header
         meta = frontmatter.parse(mdtext)[0]
-       
+
         # Extract template
         post["template"] = meta.get("template", config.default_post_template)
 
@@ -81,20 +87,29 @@ for dirname, subdirlist, mdlist in os.walk('.'):
             prop = prop_dict["property"]
             prop_raw = meta.get(prop, None)
             if prop_dict.get("list", False) and prop_raw:
-                post[prop] = [{"name": word, "slug": slugify(word)} for word in prop_raw.split(',')]
+                post[prop] = [
+                    {"name": word, "slug": slugify(word)}
+                    for word in prop_raw.split(",")
+                ]
                 for item in post[prop]:
                     slug = item["slug"]
                     if slug in posts_prop_index[prop]:
                         posts_prop_index[prop][slug]["posts"].append(post)
                     else:
-                        posts_prop_index[prop][slug] = {"name": item["name"], "posts": [post]}
+                        posts_prop_index[prop][slug] = {
+                            "name": item["name"],
+                            "posts": [post],
+                        }
             else:
                 post[prop] = {"name": prop_raw, "slug": slugify(prop_raw)}
                 slug = post[prop]["slug"]
                 if slug in posts_prop_index[prop]:
                     posts_prop_index[prop][slug]["posts"].append(post)
                 else:
-                    posts_prop_index[prop][slug] = {"name": post[prop]["name"], "posts": [post]}
+                    posts_prop_index[prop][slug] = {
+                        "name": post[prop]["name"],
+                        "posts": [post],
+                    }
 
         posts.append(post)
 
@@ -103,65 +118,69 @@ for dirname, subdirlist, mdlist in os.walk('.'):
 
         # Replace stuff
         for item in config.replace:
-            mdtext = mdtext.replace(item[0],item[1])
+            mdtext = mdtext.replace(item[0], item[1])
 
         # Convert the post into GMI
-        gmitext = md2gemini(mdtext,
-                code_tag=config.code_tag,
-                img_tag=config.img_tag,
-                indent=config.indent,
-                ascii_table=config.ascii_table,
-                frontmatter=True,
-                links=config.links,
-                plain=config.plain,
-                strip_html=config.strip_html,
-                base_url=config.base_url,
-                link_func=add_ext_gmi,
-                table_tag=config.table_tag
-                )
+        gmitext = md2gemini(
+            mdtext,
+            code_tag=config.code_tag,
+            img_tag=config.img_tag,
+            indent=config.indent,
+            ascii_table=config.ascii_table,
+            frontmatter=True,
+            links=config.links,
+            plain=config.plain,
+            strip_html=config.strip_html,
+            base_url=config.base_url,
+            link_func=add_ext_gmi,
+            table_tag=config.table_tag,
+        )
 
         # Read template file
-        with open(tpl_path+"/"+post["template"]+".tpl", 'r') as tpl:
+        with open(tpl_path + "/" + post["template"] + ".tpl", "r") as tpl:
             template = Template(tpl.read())
 
         # Integrate the GMI content in the template
-        gmitext = template.render(content=gmitext, meta = post)
-        
+        gmitext = template.render(content=gmitext, meta=post)
+
         # Dirty fix a weird bug where some lines are CRLF-terminated
-        gmitext = gmitext.replace('\r\n','\n')
-        
+        gmitext = gmitext.replace("\r\n", "\n")
 
         # Time to write the GMI file
-        with open(gmi_subpath+"/"+gmifile, 'w') as gmi:
+        with open(gmi_subpath + "/" + gmifile, "w") as gmi:
             gmi.write(gmitext)
 
 # Generate home page
-with open(tpl_path+"/index.tpl", 'r') as tpl:
+with open(tpl_path + "/index.tpl", "r") as tpl:
     template = Template(tpl.read())
 text = template.render(posts=posts)
-with open(meta_path+"/index.gmi", 'w') as gmi:
+with open(meta_path + "/index.gmi", "w") as gmi:
     gmi.write(text)
 
 # Generate custom meta pages
 for prop_dict in config.index_props:
     prop = prop_dict["property"]
     if "index_name" in prop_dict:
-        with open(tpl_path+"/"+prop_dict.get("index_tpl",prop)+".tpl", 'r') as tpl:
+        with open(
+            tpl_path + "/" + prop_dict.get("index_tpl", prop) + ".tpl", "r"
+        ) as tpl:
             template = Template(tpl.read())
         text = template.render(prop=posts_prop_index[prop])
-        with open(meta_path+"/"+prop_dict["index_name"]+'.gmi', 'w') as gmi:
+        with open(meta_path + "/" + prop_dict["index_name"] + ".gmi", "w") as gmi:
             gmi.write(text)
-    os.makedirs(meta_path+"/"+prop_dict.get("item_dir", prop), exist_ok=True)
-    with open(tpl_path+"/"+prop_dict.get("item_tpl", prop)+".tpl", 'r') as tpl:
+    os.makedirs(meta_path + "/" + prop_dict.get("item_dir", prop), exist_ok=True)
+    with open(tpl_path + "/" + prop_dict.get("item_tpl", prop) + ".tpl", "r") as tpl:
         template = Template(tpl.read())
     for item in posts_prop_index[prop]:
         text = template.render(prop_item=posts_prop_index[prop][item])
-        with open(meta_path+"/"+prop_dict.get("item_dir", prop)+"/"+item+".gmi", "w") as gmi:
+        with open(
+            meta_path + "/" + prop_dict.get("item_dir", prop) + "/" + item + ".gmi", "w"
+        ) as gmi:
             gmi.write(text)
 
 # Generate posts list page
-with open(tpl_path+"/posts_list.tpl", 'r') as tpl:
+with open(tpl_path + "/posts_list.tpl", "r") as tpl:
     template = Template(tpl.read())
 text = template.render(posts=posts)
-with open(meta_path+"/posts.gmi", 'w') as gmi:
+with open(meta_path + "/posts.gmi", "w") as gmi:
     gmi.write(text)
