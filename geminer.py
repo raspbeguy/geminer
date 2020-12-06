@@ -143,15 +143,14 @@ for dirname, subdirlist, mdlist in os.walk("."):
             template = Template(tpl.read())
 
         # Integrate the GMI content in the template
-        rendered_text = template.render(post=post)
+        gmitext = template.render(post=post)
 
         # Dirty fix a weird bug where some lines are CRLF-terminated
-        rendered_text = gmitext.replace("\r\n", "\n")
-
+        gmitext = gmitext.replace("\r\n", "\n")
 
         # Time to write the GMI file
         with open(gmi_subpath + "/" + gmifile, "w") as gmi:
-            gmi.write(rendered_text)
+            gmi.write(gmitext)
 
 # Generate home page
 with open(tpl_path + "/index.tpl", "r") as tpl:
