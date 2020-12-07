@@ -13,51 +13,37 @@ import config
 # locale (for templates, for example dates rendering)
 locale.setlocale(locale.LC_ALL, config.locale)
 
-md_path = os.path.expanduser(config.md_dir)
-gmi_path = os.path.expanduser(config.gmi_dir)
-tpl_path = os.path.expanduser(config.tpl_dir)
-meta_path = os.path.expanduser(config.meta_dir)
+md_path = os.path.abspath(os.path.expanduser(config.md_path))
+gmi_path = os.path.abspath(os.path.expanduser(config.posts_path))
+tpl_path = os.path.abspath(os.path.expanduser(config.tpl_path))
+
+posts_path = os.path.abspath(gmi_path + "/" + config.posts_dir)
 
 # Initiate meta lists
-posts = []
-posts_prop_index = {}
+posts = [] # This is a flat, unsorted list of posts
+posts_prop_index = {} # This is a dict containing posts sorted by properties
+
 for prop_dict in config.index_props:
     posts_prop_index[prop_dict["property"]] = {}
-
-os.chdir(md_path)
 
 
 def add_ext_gmi(link):
     # Custom function to apply to links
     if "://" not in link:  # apply only on local links
-        return link + ".gmi"
+        return os.path.splitext(link)[0] + ".gmi"
     else:
         return link
 
 
 # Walk through markdown directories
-for dirname, subdirlist, mdlist in os.walk("."):
+for dirname, subdirlist, mdlist in os.walk(md_path):
 
     # Create same hierarchy in GMI directory
-    gmi_subpath = os.path.abspath(gmi_path + "/" + dirname)
+    gmi_subpath = os.path.abspath(posts_path + "/" + os.path.relpath(dirname, md_path))
     os.makedirs(gmi_subpath, exist_ok=True)
 
     for mdfile in mdlist:
         basename, extension = os.path.splitext(mdfile)
-        extension = extension[1:]
-
-        post = {}
-
-        gmifile = basename
-        if config.gmi_extension:
-            gmifile += ".gmi"
-
-        # We need the relative path without the "./"
-        simpledirname = dirname[2:]
-        if simpledirname == "":
-            post["path"] = gmifile
-        else:
-            post["path"] = simpledirname + "/" + gmifile
 
         # We want to ignore the file if this isn't a markdown file
         if extension not in config.md_extensions:
@@ -67,6 +53,14 @@ for dirname, subdirlist, mdlist in os.walk("."):
                 )
             )
             pass
+
+        post = {}
+
+        gmifile = basename
+        if config.gmi_extension:
+            gmifile += ".gmi"
+
+            post["path"] = os.path.relpath(dirname + "/" + gmifile, md_path)
 
         # Read the Markdown file
         with open(dirname + "/" + mdfile, "r") as md:
@@ -156,7 +150,7 @@ for dirname, subdirlist, mdlist in os.walk("."):
 with open(tpl_path + "/index.tpl", "r") as tpl:
     template = Template(tpl.read())
 text = template.render(posts=posts)
-with open(meta_path + "/index.gmi", "w") as gmi:
+with open(gmi_path + "/index.gmi", "w") as gmi:
     gmi.write(text)
 
 # Generate custom meta pages
@@ -168,15 +162,15 @@ for prop_dict in config.index_props:
         ) as tpl:
             template = Template(tpl.read())
         text = template.render(prop=posts_prop_index[prop])
-        with open(meta_path + "/" + prop_dict["index_name"] + ".gmi", "w") as gmi:
+        with open(gmi_path + "/" + prop_dict["index_name"] + ".gmi", "w") as gmi:
             gmi.write(text)
-    os.makedirs(meta_path + "/" + prop_dict.get("item_dir", prop), exist_ok=True)
+    os.makedirs(gmi_path + "/" + prop_dict.get("item_dir", prop), exist_ok=True)
     with open(tpl_path + "/" + prop_dict.get("item_tpl", prop) + ".tpl", "r") as tpl:
         template = Template(tpl.read())
     for item in posts_prop_index[prop]:
         text = template.render(prop_item=posts_prop_index[prop][item])
         with open(
-            meta_path + "/" + prop_dict.get("item_dir", prop) + "/" + item + ".gmi", "w"
+            gmi_path + "/" + prop_dict.get("item_dir", prop) + "/" + item + ".gmi", "w"
         ) as gmi:
             gmi.write(text)
 
@@ -184,5 +178,5 @@ for prop_dict in config.index_props:
 with open(tpl_path + "/posts_list.tpl", "r") as tpl:
     template = Template(tpl.read())
 text = template.render(posts=posts)
-with open(meta_path + "/posts.gmi", "w") as gmi:
+with open(gmi_path + "/posts.gmi", "w") as gmi:
     gmi.write(text)

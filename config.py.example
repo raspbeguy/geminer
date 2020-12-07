@@ -5,37 +5,36 @@
 locale = "fr_FR.utf8"
 
 # path to directory containing markdonw files to convert
-md_dir = "/srv/my-site-content/posts"
+md_path = "/srv/my-site-content/posts"
 
-# path to directory where gemini files will be exported
-gmi_content_dir = "/srv/gemini/my-site/posts"
+# path to gemini blog root directory
+gmi_path = "/srv/gemini/my-site"
 
-# path to directory where meta pages will be generated
-# such as home page, tags list, tag pages, author pages...
-meta_dir = "/srv/gemini/my-site"
+# directory within gmi_path which will contains converted posts
+posts_dir = "posts"
 
 # path to directory containing templates
-tpl_dir = "~/repo/htg-content/gemini/templates"
+tpl_path = "/srv/gemini/templates"
 
 # list of markdown files extensions
 # Any file with a different extension will be ignored.
 md_extensions = [
-        "markdown",
-        "mdown",
-        "mkdn",
-        "md",
-        "mkd",
-        "mdwn",
-        "mdtxt",
-        "mdtext",
-        "text",
-        "Rmd"
+        ".markdown",
+        ".mdown",
+        ".mkdn",
+        ".md",
+        ".mkd",
+        ".mdwn",
+        ".mdtxt",
+        ".mdtext",
+        ".text",
+        ".Rmd"
         ]
 
-# Specify gemini files extension. Don't specify to disable extension.
+# Specify gemini files extension. Set to empty string to disable extension.
 # Warning: disabling could have unwanted side effects.
 # Check out README for more informations.
-gmi_extension = "gmi"
+gmi_extension = ".gmi"
 
 # replacement map
 # Some CMS make you use some placeholders (for instance for assets URL).
