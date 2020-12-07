@@ -14,7 +14,7 @@ import config
 locale.setlocale(locale.LC_ALL, config.locale)
 
 md_path = os.path.abspath(os.path.expanduser(config.md_path))
-gmi_path = os.path.abspath(os.path.expanduser(config.posts_path))
+gmi_path = os.path.abspath(os.path.expanduser(config.gmi_path))
 tpl_path = os.path.abspath(os.path.expanduser(config.tpl_path))
 
 posts_path = os.path.abspath(gmi_path + "/" + config.posts_dir)
