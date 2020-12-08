@@ -90,6 +90,7 @@ post_props = [
 #   * index_tpl (facultative):  template of the property values index
 #
 # Filenames are relative to meta_dir and extensions are automatically added.
+# If filename contains an extension, it will override gmi_extension value.
 # When a string value is facultative, it defaults to property name, except for
 # index_name, which disables property values global index if not specified.
 index_props = [
@@ -108,5 +109,24 @@ index_props = [
         "item_tpl": "author",
         "index_name": "authors",
         "index_tpl": "authors_index"
+    }
+]
+
+
+# custom extra pages to generate
+# Each entry will generate a single page.
+# This is the place to define homepage and feed page for instance.
+# Templates will have to handle the full unsorted list of posts.
+# "name" key is mandatory. It is the filename of the page.
+# If filename contains an extension, it will override gmi_extension value.
+# "tpl" key is facultative, defaults to name (without extension if any)
+custom_pages = [
+    {
+        "name": "index",
+        "tpl": "index"
+    },
+    {
+        "name": "atom.xml",
+        "tpl": "atom"
     }
 ]

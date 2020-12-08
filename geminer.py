@@ -60,7 +60,7 @@ for dirname, subdirlist, mdlist in os.walk(md_path):
         if config.gmi_extension:
             gmifile += ".gmi"
 
-            post["path"] = os.path.relpath(dirname + "/" + gmifile, md_path)
+        post["path"] = os.path.relpath(dirname + "/" + gmifile, md_path)
 
         # Read the Markdown file
         with open(dirname + "/" + mdfile, "r") as md:
@@ -146,12 +146,19 @@ for dirname, subdirlist, mdlist in os.walk(md_path):
         with open(gmi_subpath + "/" + gmifile, "w") as gmi:
             gmi.write(gmitext)
 
-# Generate home page
-with open(tpl_path + "/index.tpl", "r") as tpl:
-    template = Template(tpl.read())
-text = template.render(posts=posts)
-with open(gmi_path + "/index.gmi", "w") as gmi:
-    gmi.write(text)
+# Generate custom extra pages
+for page_dict in custom_page:
+    rel_path, filename = os.path.split(page_dict["name"])
+    os.makedirs(rel_path, exist_ok=True)
+    basename, extension = os.path.spolitext(page_dict["name"])
+    if not extension:
+        extention = gmi_extension
+    filename = basename + extension
+    with open(tpm_path + "/" + page_dict.get("tpl", basename) + ".tpl", "r") as tpl:
+        template = Template(tpl.read())
+    text = template.render(posts=posts)
+    with open(gmi_path + rel_path + "/" + filename, "w") as gmi:
+        gmi.write(text)
 
 # Generate custom meta pages
 for prop_dict in config.index_props:
@@ -162,7 +169,7 @@ for prop_dict in config.index_props:
         ) as tpl:
             template = Template(tpl.read())
         text = template.render(prop=posts_prop_index[prop])
-        with open(gmi_path + "/" + prop_dict["index_name"] + ".gmi", "w") as gmi:
+        with open(gmi_path + "/" + prop_dict["index_name"] + gmi_extension, "w") as gmi:
             gmi.write(text)
     os.makedirs(gmi_path + "/" + prop_dict.get("item_dir", prop), exist_ok=True)
     with open(tpl_path + "/" + prop_dict.get("item_tpl", prop) + ".tpl", "r") as tpl:
@@ -170,13 +177,6 @@ for prop_dict in config.index_props:
     for item in posts_prop_index[prop]:
         text = template.render(prop_item=posts_prop_index[prop][item])
         with open(
-            gmi_path + "/" + prop_dict.get("item_dir", prop) + "/" + item + ".gmi", "w"
+            gmi_path + "/" + prop_dict.get("item_dir", prop) + "/" + item + gmi_extension, "w"
         ) as gmi:
             gmi.write(text)
-
-# Generate posts list page
-with open(tpl_path + "/posts_list.tpl", "r") as tpl:
-    template = Template(tpl.read())
-text = template.render(posts=posts)
-with open(gmi_path + "/posts.gmi", "w") as gmi:
-    gmi.write(text)
