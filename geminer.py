@@ -157,6 +157,7 @@ for page_dict in config.custom_pages:
     filepath = os.path.join(rel_path, filename)
     with open(tpl_path + "/" + page_dict.get("tpl", basename) + ".tpl", "r") as tpl:
         template = Template(tpl.read())
+    template.globals['now'] = datetime.now
     text = template.render(posts=posts)
     with open(gmi_path + "/" + filepath, "w") as gmi:
         gmi.write(text)
