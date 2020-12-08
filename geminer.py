@@ -56,9 +56,7 @@ for dirname, subdirlist, mdlist in os.walk(md_path):
 
         post = {}
 
-        gmifile = basename
-        if config.gmi_extension:
-            gmifile += ".gmi"
+        gmifile = basename + config.gmi_extension
 
         post["path"] = os.path.relpath(dirname + "/" + gmifile, md_path)
 
@@ -153,7 +151,7 @@ for page_dict in config.custom_pages:
         os.makedirs(rel_path, exist_ok=True)
     basename, extension = os.path.splitext(page_dict["name"])
     if not extension:
-        extention = gmi_extension
+        extention = config.gmi_extension
     filename = basename + extension
     filepath = os.path.join(rel_path, filename)
     with open(tpm_path + "/" + page_dict.get("tpl", basename) + ".tpl", "r") as tpl:
@@ -171,7 +169,7 @@ for prop_dict in config.index_props:
         ) as tpl:
             template = Template(tpl.read())
         text = template.render(prop=posts_prop_index[prop])
-        with open(gmi_path + "/" + prop_dict["index_name"] + gmi_extension, "w") as gmi:
+        with open(gmi_path + "/" + prop_dict["index_name"] + config.gmi_extension, "w") as gmi:
             gmi.write(text)
     os.makedirs(gmi_path + "/" + prop_dict.get("item_dir", prop), exist_ok=True)
     with open(tpl_path + "/" + prop_dict.get("item_tpl", prop) + ".tpl", "r") as tpl:
@@ -179,6 +177,6 @@ for prop_dict in config.index_props:
     for item in posts_prop_index[prop]:
         text = template.render(prop_item=posts_prop_index[prop][item])
         with open(
-            gmi_path + "/" + prop_dict.get("item_dir", prop) + "/" + item + gmi_extension, "w"
+            gmi_path + "/" + prop_dict.get("item_dir", prop) + "/" + item + config.gmi_extension, "w"
         ) as gmi:
             gmi.write(text)
