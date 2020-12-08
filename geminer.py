@@ -150,7 +150,7 @@ for page_dict in config.custom_pages:
     if rel_path:
         os.makedirs(rel_path, exist_ok=True)
     basename, extension = os.path.splitext(filename)
-    if extension = "":
+    if extension == "":
         filename = basename + config.gmi_extension
     else:
         filename = basename + extension
