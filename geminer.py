@@ -158,7 +158,7 @@ for page_dict in config.custom_pages:
     with open(tpl_path + "/" + page_dict.get("tpl", basename) + ".tpl", "r") as tpl:
         template = Template(tpl.read())
     text = template.render(posts=posts)
-    with open(gmi_path + filepath, "w") as gmi:
+    with open(gmi_path + "/" + filepath, "w") as gmi:
         gmi.write(text)
 
 # Generate custom meta pages
