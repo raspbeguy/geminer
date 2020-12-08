@@ -154,7 +154,7 @@ for page_dict in config.custom_pages:
         extention = config.gmi_extension
     filename = basename + extension
     filepath = os.path.join(rel_path, filename)
-    with open(tpm_path + "/" + page_dict.get("tpl", basename) + ".tpl", "r") as tpl:
+    with open(tpl_path + "/" + page_dict.get("tpl", basename) + ".tpl", "r") as tpl:
         template = Template(tpl.read())
     text = template.render(posts=posts)
     with open(gmi_path + filepath, "w") as gmi:
