@@ -159,6 +159,7 @@ for page_dict in config.custom_pages:
         template = Template(tpl.read())
     template.globals['now'] = datetime.now
     text = template.render(posts=posts)
+    text = text.replace("\r\n", "\n")
     with open(gmi_path + "/" + filepath, "w") as gmi:
         gmi.write(text)
 
