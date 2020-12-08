@@ -151,7 +151,7 @@ for page_dict in config.custom_pages:
     rel_path, filename = os.path.split(page_dict["name"])
     if rel_path:
         os.makedirs(rel_path, exist_ok=True)
-    basename, extension = os.path.spolitext(page_dict["name"])
+    basename, extension = os.path.splitext(page_dict["name"])
     if not extension:
         extention = gmi_extension
     filename = basename + extension
