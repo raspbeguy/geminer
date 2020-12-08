@@ -149,15 +149,17 @@ for dirname, subdirlist, mdlist in os.walk(md_path):
 # Generate custom extra pages
 for page_dict in config.custom_pages:
     rel_path, filename = os.path.split(page_dict["name"])
-    os.makedirs(rel_path, exist_ok=True)
+    if rel_path:
+        os.makedirs(rel_path, exist_ok=True)
     basename, extension = os.path.spolitext(page_dict["name"])
     if not extension:
         extention = gmi_extension
     filename = basename + extension
+    filepath = os.path.join(rel_path, filename)
     with open(tpm_path + "/" + page_dict.get("tpl", basename) + ".tpl", "r") as tpl:
         template = Template(tpl.read())
     text = template.render(posts=posts)
-    with open(gmi_path + rel_path + "/" + filename, "w") as gmi:
+    with open(gmi_path + filepath, "w") as gmi:
         gmi.write(text)
 
 # Generate custom meta pages
