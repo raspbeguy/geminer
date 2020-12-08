@@ -147,7 +147,7 @@ for dirname, subdirlist, mdlist in os.walk(md_path):
             gmi.write(gmitext)
 
 # Generate custom extra pages
-for page_dict in custom_page:
+for page_dict in config.custom_page:
     rel_path, filename = os.path.split(page_dict["name"])
     os.makedirs(rel_path, exist_ok=True)
     basename, extension = os.path.spolitext(page_dict["name"])
