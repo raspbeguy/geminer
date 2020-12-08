@@ -149,10 +149,11 @@ for page_dict in config.custom_pages:
     rel_path, filename = os.path.split(page_dict["name"])
     if rel_path:
         os.makedirs(rel_path, exist_ok=True)
-    basename, extension = os.path.splitext(page_dict["name"])
-    if not extension:
-        extention = config.gmi_extension
-    filename = basename + extension
+    basename, extension = os.path.splitext(filename)
+    if extension = "":
+        filename = basename + config.gmi_extension
+    else:
+        filename = basename + extension
     filepath = os.path.join(rel_path, filename)
     with open(tpl_path + "/" + page_dict.get("tpl", basename) + ".tpl", "r") as tpl:
         template = Template(tpl.read())
