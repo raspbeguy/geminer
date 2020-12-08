@@ -58,7 +58,7 @@ for dirname, subdirlist, mdlist in os.walk(md_path):
 
         gmifile = basename + config.gmi_extension
 
-        post["path"] = os.path.relpath(dirname + "/" + gmifile, md_path)
+        post["path"] = config.posts_dir + "/" + os.path.relpath(dirname + "/" + gmifile, md_path)
 
         # Read the Markdown file
         with open(dirname + "/" + mdfile, "r") as md:
