@@ -2,19 +2,19 @@
 # It is not intended to be executed.
 
 # locale (for templates, for example dates rendering)
-locale = "fr_FR.utf8"
+locale = "en_US.utf8"
 
 # path to directory containing markdonw files to convert
-md_path = "/srv/my-site-content/posts"
+md_path = "/srv/gemini/example/md"
 
 # path to gemini blog root directory
-gmi_path = "/srv/gemini/my-site"
+gmi_path = "/srv/gemini/example/gmi"
 
 # directory within gmi_path which will contains converted posts
 posts_dir = "posts"
 
 # path to directory containing templates
-tpl_path = "/srv/gemini/templates"
+tpl_path = "/srv/gemini/example/templates"
 
 # list of markdown files extensions
 # Any file with a different extension will be ignored.
@@ -40,7 +40,7 @@ gmi_extension = ".gmi"
 # Some CMS make you use some placeholders (for instance for assets URL).
 # You have to inform geminer of them here.
 replace = [
-        ("%assets_url%", "https://hashtagueule.fr/assets")
+        ("%assets_url%", "https://example.com/assets")
 ]
 
 # md2gemini settings
