@@ -25,7 +25,7 @@ During the second step, all metadata has been gathered, which enables creation o
 
 ## Configuration
 
-Soon. For now you can read [the example config](config.py.example).
+Soon. For now you can read [the example config](example/config.py).
 
 ## Gemini capsules using Geminer
 
